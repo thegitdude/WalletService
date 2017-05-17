@@ -8,6 +8,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletService.Tests", "WalletService.Tests\WalletService.Tests.csproj", "{1594CAAD-C2F7-47D7-92EE-6C8CDA42A443}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "paket", "paket", "{1EB76F56-8347-439D-A188-79396062D463}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+		paket.lock = paket.lock
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

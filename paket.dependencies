@@ -34,3 +34,4 @@ nuget Dapper
 nuget NUnit
 nuget AutoFixture
 nuget AutoFixture.AutoMoq
+nuget Moq 4.1.1308.2120

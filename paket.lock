@@ -10,7 +10,6 @@ NUGET
     AutoFixture.AutoMoq (3.50.2)
       AutoFixture (>= 3.50.2)
       Moq (>= 4.1.1308.2120)
-    Castle.Core (4.0)
     Dapper (1.50.2)
     dbup (3.3.5)
     Microsoft.AspNet.Razor (3.2.3)
@@ -34,8 +33,7 @@ NUGET
     Microsoft.Owin.Host.SystemWeb (3.1)
       Microsoft.Owin (>= 3.1)
       Owin (>= 1.0)
-    Moq (4.7.10)
-      Castle.Core (>= 4.0)
+    Moq (4.1.1308.2120)
     Newtonsoft.Json (10.0.2)
     NUnit (3.6.1)
       NETStandard.Library (>= 1.6) - framework: >= net463

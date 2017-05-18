@@ -32,7 +32,7 @@ namespace WalletService.Utility
         {
             using (IDbConnection db = new SqlConnection(sqlConnectionString))
             {
-                return await db.QueryFirstAsync<T>(sql, param).ConfigureAwait(false);
+                return await db.QueryFirstOrDefaultAsync<T>(sql, param).ConfigureAwait(false);
             }
         }
     }

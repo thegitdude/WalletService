@@ -5,13 +5,6 @@ source http://reactjs.net/packages/
 source https://www.nuget.org/api/v2/
 framework >= net451
 
-nuget Microsoft.ApplicationInsights 1.2.3
-nuget Microsoft.ApplicationInsights.Agent.Intercept 1.2.0
-nuget Microsoft.ApplicationInsights.DependencyCollector 1.2.3
-nuget Microsoft.ApplicationInsights.PerfCounterCollector 1.2.3
-nuget Microsoft.ApplicationInsights.Web 1.2.3
-nuget Microsoft.ApplicationInsights.WindowsServer 1.2.3
-nuget Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel 1.2.3
 nuget Microsoft.CodeDom.Providers.DotNetCompilerPlatform 1.0.0
 nuget Microsoft.Net.Compilers 1.0.0
 
@@ -36,3 +29,8 @@ nuget Autofac.WebApi2
 //persistance
 nuget DbUp
 nuget Dapper
+
+//testing
+nuget NUnit
+nuget AutoFixture
+nuget AutoFixture.AutoMoq

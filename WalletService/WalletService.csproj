@@ -114,6 +114,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutofacModules\SqlModule.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Exceptions\AccountNotFoundException.cs" />
     <Compile Include="Exceptions\NotEnoughFundsException.cs" />
@@ -123,7 +124,9 @@
     <Compile Include="Service\IAccountService.cs" />
     <Compile Include="Service\AccountService.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utility\IDbConnectionFactory.cs" />
     <Compile Include="Utility\ISqlManager.cs" />
+    <Compile Include="Utility\DbConnectionFactory.cs" />
     <Compile Include="Utility\SqlManager.cs" />
   </ItemGroup>
   <ItemGroup />

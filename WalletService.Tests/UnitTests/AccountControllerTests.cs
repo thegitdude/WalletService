@@ -1,8 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Ploeh.AutoFixture;
 using Moq;
@@ -18,7 +14,7 @@ namespace WalletService.Tests.UnitTests
         private Mock<IAccountService> _accountServiceMock;
 
         [SetUp]
-        public void SetUp()
+        public void SetUp2()
         {
             _accountServiceMock = Fixture.Freeze<Mock<IAccountService>>();
         }
@@ -29,7 +25,7 @@ namespace WalletService.Tests.UnitTests
             //Arrange
             var customerId = Fixture.Create<int>();
             var expected = Fixture.Create<Account>();
-            _accountServiceMock.Setup(x => x.GetAccountInformationAsync(customerId)).Returns(Task.FromResult(expected));
+            _accountServiceMock.Setup(x => x.GetAccountInformationAsync(customerId)).ReturnsAsync(expected);
 
             var sut = new AccountController(_accountServiceMock.Object);
 

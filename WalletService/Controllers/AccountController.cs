@@ -26,9 +26,6 @@ namespace WalletService.Controllers
             {
                 var accountInfo = await _accountService.GetAccountInformationAsync(accountId).ConfigureAwait(false);
 
-                if(accountInfo == null)
-                    return BadRequest($"No account found for accountId: {accountId}");
-
                 return Ok(accountInfo.Balance);
             }
             catch (AccountNotFoundException e)
@@ -105,7 +102,7 @@ namespace WalletService.Controllers
             }
         }
 
-        [Route("delete/{userId}")]
+        [Route("delete/{accountId}")]
         [HttpDelete]
         public async Task<IHttpActionResult> CloseAccountAsync(int accountId)
         {

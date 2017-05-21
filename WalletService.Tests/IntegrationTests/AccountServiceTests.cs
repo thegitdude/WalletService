@@ -75,6 +75,34 @@ namespace WalletService.Tests.IntegrationTests
         }
 
         [Test]
+        public async Task CloseCustomerAccountThrowsExceptionWhenBalanceIsNotZero()
+        {
+            //Arrange
+            var userId = Fixture.Create<string>();
+            var sut = new AccountService(SqlManager);
+
+            var accountId = await sut.OpenCustomerAccountAsync(userId);
+            await sut.DepositAmountAsync(accountId, 100);
+
+            //Act & Assert
+            Assert.ThrowsAsync<AccountCloseException>(async () => await sut.CloseCustomerAccountAsync(accountId));
+        }
+
+        [Test]
+        public async Task CloseCustomerAccountThrowsExceptionWhenAccountIsAlreadyDeleted()
+        {
+            //Arrange
+            var userId = Fixture.Create<string>();
+            var sut = new AccountService(SqlManager);
+
+            var accountId = await sut.OpenCustomerAccountAsync(userId);
+            await sut.CloseCustomerAccountAsync(accountId);
+
+            //Act & Assert
+            Assert.ThrowsAsync<AccountCloseException>(async () => await sut.CloseCustomerAccountAsync(accountId));
+        }
+
+        [Test]
         public async Task CanDepositFunds()
         {
             //Arrange

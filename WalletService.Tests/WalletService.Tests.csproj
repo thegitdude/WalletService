@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="IntegrationTests\AccountServiceTests.cs" />
     <Compile Include="IntegrationTests\IntegrationTestBase.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\AccountControllerTests.cs" />
     <Compile Include="UnitTests\UnitTestBase.cs" />

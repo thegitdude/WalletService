@@ -116,6 +116,7 @@
   <ItemGroup>
     <Compile Include="AutofacModules\SqlModule.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Exceptions\AccountCloseException.cs" />
     <Compile Include="Exceptions\AccountNotFoundException.cs" />
     <Compile Include="Exceptions\NotEnoughFundsException.cs" />
     <Compile Include="Exceptions\UserIdNotUniqueException.cs" />

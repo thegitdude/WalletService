@@ -20,6 +20,14 @@ namespace WalletService.Service
 
         public async Task<int> CloseCustomerAccountAsync(int accountId)
         {
+            var accountInformation = await GetAccountInformationAsync(accountId).ConfigureAwait(false);
+
+            if (accountInformation.Active == false)
+                throw new AccountCloseException("Account is already closed!");
+
+            if (accountInformation.Balance > 0)
+                throw new AccountCloseException("Account can not be closed due to balance not being empty!");
+
             const string sql = @"UPDATE Accounts SET Active = 0, DeletedDate = GETDATE(), ModifiedDate = GETDATE() 
                                  WHERE Id = @Id";
 

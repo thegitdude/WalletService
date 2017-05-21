@@ -61,7 +61,7 @@ namespace WalletService.Tests.UnitTests
         }
 
         [Test]
-        public async Task CreateAccountReturnsInternalServerErrorWhenExceptionIsThrown()
+        public async Task CreateAccountReturnsInternalServerErrorForUnexpectedExceptions()
         {
             //Arrange
             var userId = Fixture.Create<string>();
@@ -94,6 +94,94 @@ namespace WalletService.Tests.UnitTests
 
             //Assert
             Assert.That(actual.Content, Is.EqualTo(expected.Balance));
+        }
+
+        [Test]
+        public async Task GetAccountBlanceReturnsBadRequestWhenAccountNotFound()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.GetAccountInformationAsync(accountId))
+                .ThrowsAsync(Fixture.Create<AccountNotFoundException>());
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.GetAccountBallance(accountId).ConfigureAwait(false) as NegotiatedContentResult<string>;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public async Task GetAccountBlanceReturnsInternalServerErrorForUnexpectedExceptions()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.GetAccountInformationAsync(accountId))
+                .ThrowsAsync(Fixture.Create<Exception>());
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.GetAccountBallance(accountId).ConfigureAwait(false) as NegotiatedContentResult<string>;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+        }
+
+        [Test]
+        public async Task CanCloseAccount()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.CloseCustomerAccountAsync(accountId))
+                .ReturnsAsync(1);
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.CloseAccountAsync(accountId).ConfigureAwait(false) as OkResult;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task CloseAccountReturnsBadRequestWhenAccountNotFound()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.CloseCustomerAccountAsync(accountId))
+                .ThrowsAsync(Fixture.Create<AccountNotFoundException>());
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.CloseAccountAsync(accountId).ConfigureAwait(false) as NegotiatedContentResult<string>;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public async Task CloseAccountReturnsBadRequestWhenAccountCloseException()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.CloseCustomerAccountAsync(accountId))
+                .ThrowsAsync(Fixture.Create<AccountCloseException>());
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.CloseAccountAsync(accountId).ConfigureAwait(false) as BadRequestErrorMessageResult;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
         }
     }
 }

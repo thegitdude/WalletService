@@ -17,8 +17,8 @@ namespace WalletService.Controllers
             _accountService = accountService;
         }
 
-        [Route("getballance/{accountId}")]
         [HttpGet]
+        [Route("getballance/{accountId}")]
         public async Task<IHttpActionResult> GetAccountBallance(int accountId)
         {
             try
@@ -29,7 +29,7 @@ namespace WalletService.Controllers
             }
             catch (AccountNotFoundException e)
             {
-                return BadRequest(e.Message);
+                return Content(HttpStatusCode.NotFound, e.Message);
             }
             catch (Exception e)
             {
@@ -37,8 +37,8 @@ namespace WalletService.Controllers
             }
         }
 
-        [Route("depositFunds/{accountId}/{ammount:decimal}")]
         [HttpPost]
+        [Route("depositFunds/{accountId}/{ammount:decimal}")]
         public async Task<IHttpActionResult> DepositFunds(int accountId, decimal ammount)
         {
             try
@@ -49,7 +49,7 @@ namespace WalletService.Controllers
             }
             catch (AccountNotFoundException e)
             {
-                return BadRequest(e.Message);
+                return Content(HttpStatusCode.NotFound, e.Message);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -61,8 +61,8 @@ namespace WalletService.Controllers
             }
         }
 
-        [Route("withdrawFunds/{accountId}/{ammount:decimal}")]
         [HttpPost]
+        [Route("withdrawFunds/{accountId}/{ammount:decimal}")]
         public async Task<IHttpActionResult> WithdrawFunds(int accountId, decimal ammount)
         {
             try
@@ -73,7 +73,7 @@ namespace WalletService.Controllers
             }
             catch (AccountNotFoundException e)
             {
-                return BadRequest(e.Message);
+                return Content(HttpStatusCode.NotFound, e.Message);
             }
             catch (NotEnoughFundsException e)
             {
@@ -89,8 +89,8 @@ namespace WalletService.Controllers
             }
         }
 
-        [Route("create/{userId}")]
         [HttpPut]
+        [Route("create/{userId}")]
         public async Task<IHttpActionResult> CreateAccountAsync(string userId)
         {
             try
@@ -109,20 +109,21 @@ namespace WalletService.Controllers
             }
         }
 
-        [Route("delete/{accountId}")]
         [HttpDelete]
+        [Route("delete/{accountId}")]
         public async Task<IHttpActionResult> CloseAccountAsync(int accountId)
         {
             try
             {
-                var affectedRows = await _accountService.CloseCustomerAccountAsync(accountId).ConfigureAwait(false);
-
-                if (affectedRows == 0)
-                    return BadRequest($"No account found for accountId: {accountId}");
+                await _accountService.CloseCustomerAccountAsync(accountId).ConfigureAwait(false);
 
                 return Ok();
             }
             catch (AccountNotFoundException e)
+            {
+                return Content(HttpStatusCode.NotFound, e.Message);
+            }
+            catch(AccountCloseException e)
             {
                 return BadRequest(e.Message);
             }

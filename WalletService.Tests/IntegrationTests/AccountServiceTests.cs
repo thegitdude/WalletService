@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
 using Ploeh.AutoFixture;
+using System;
 using System.Threading.Tasks;
+using WalletService.Exceptions;
 using WalletService.Model;
 using WalletService.Service;
 
@@ -8,6 +10,12 @@ namespace WalletService.Tests.IntegrationTests
 {
     public class AccountServiceTests : IntegrationTestBase
     {
+        //I don't like code comments!
+        // The test methods names should be self descriptive and explain the test case 
+        // I left out some cases on purpose due to the nature of this being an example.
+        //All cases where exceptions are thrown should be testes
+        //All success cases should be tested
+
         [Test]
         public async Task CanCreateNewAccount()
         {
@@ -24,6 +32,18 @@ namespace WalletService.Tests.IntegrationTests
             Assert.That(account.UserId, Is.EqualTo(userId));
             Assert.That(account.Active, Is.EqualTo(true));
             Assert.That(account.Balance, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task OpenCustomerAccountThrowsExceptionForNonUniqueId()
+        {
+            //Arrange
+            var userId = Fixture.Create<string>();
+            var sut = new AccountService(SqlManager);
+            await sut.OpenCustomerAccountAsync(userId);
+
+            //Act && Assert
+            Assert.ThrowsAsync<UserIdNotUniqueException>(async () => await sut.OpenCustomerAccountAsync(userId));
         }
 
         [Test]
@@ -45,6 +65,16 @@ namespace WalletService.Tests.IntegrationTests
         }
 
         [Test]
+        public void CloseCustomerAccountThrowsExceptionWhenNoRowsAfected()
+        {
+            //Arrange
+            var sut = new AccountService(SqlManager);
+
+            //Act & assert
+            Assert.ThrowsAsync<AccountNotFoundException>(async () => await sut.CloseCustomerAccountAsync(-1));
+        }
+
+        [Test]
         public async Task CanDepositFunds()
         {
             //Arrange
@@ -60,6 +90,17 @@ namespace WalletService.Tests.IntegrationTests
             var account = await GetAccountById(accountId);
             Assert.That(account, Is.Not.Null);
             Assert.That(account.Balance, Is.EqualTo(amount));
+        }
+
+        [Test]
+        public void DepositAmountThrowsExceptionWhenAmountIsLessThanZero()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            var sut = new AccountService(SqlManager);
+
+            //Act & assert
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await sut.DepositAmountAsync(accountId, -1));
         }
 
         [Test]
@@ -79,6 +120,17 @@ namespace WalletService.Tests.IntegrationTests
             Assert.That(account, Is.Not.Null);
             Assert.That(account.UserId, Is.EqualTo(userId));
             Assert.That(account.Balance, Is.EqualTo(90));
+        }
+
+        [Test]
+        public void WithdrawingLessThanZeroThrowsException()
+        {
+            //Arrange
+            var accountId = Fixture.Create<int>();
+            var sut = new AccountService(SqlManager);
+
+            //Act & assert
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await sut.WithdrawAmountAsync(accountId, -1));
         }
 
         [Test]
@@ -103,7 +155,7 @@ namespace WalletService.Tests.IntegrationTests
         {
             const string sql = @"SELECT * FROM Accounts where Id= @Id";
 
-            return await SqlManager.QueryFirstAsync<Account>(sql, new { Id = id});
+            return await SqlManager.QueryFirstAsync<Account>(sql, new { Id = id });
         }
     }
 }

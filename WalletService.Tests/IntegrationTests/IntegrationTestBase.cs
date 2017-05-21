@@ -38,7 +38,7 @@ namespace WalletService.Tests.IntegrationTests
             }
             catch (Exception e)
             {
-                //log
+                Console.WriteLine(e.Message);
                 throw;
             }
         }

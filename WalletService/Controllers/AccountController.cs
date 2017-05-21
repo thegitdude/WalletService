@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Web.Http;
 using WalletService.Exceptions;
@@ -52,6 +51,10 @@ namespace WalletService.Controllers
             {
                 return BadRequest(e.Message);
             }
+            catch (ArgumentOutOfRangeException e)
+            {
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
                 return Content(HttpStatusCode.InternalServerError, "Failed to withdraw money");
@@ -72,7 +75,11 @@ namespace WalletService.Controllers
             {
                 return BadRequest(e.Message);
             }
-            catch(NotEnoughFundsException e)
+            catch (NotEnoughFundsException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (ArgumentOutOfRangeException e)
             {
                 return BadRequest(e.Message);
             }
@@ -94,7 +101,7 @@ namespace WalletService.Controllers
             }
             catch (UserIdNotUniqueException e)
             {
-                return Content(HttpStatusCode.BadRequest, e.Message);
+                return BadRequest(e.Message);
             }
             catch (Exception e)
             {

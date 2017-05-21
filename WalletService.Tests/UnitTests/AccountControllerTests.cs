@@ -6,6 +6,9 @@ using WalletService.Service;
 using WalletService.Model;
 using WalletService.Controllers;
 using System.Web.Http.Results;
+using WalletService.Exceptions;
+using System;
+using System.Net;
 
 namespace WalletService.Tests.UnitTests
 {
@@ -14,9 +17,66 @@ namespace WalletService.Tests.UnitTests
         private Mock<IAccountService> _accountServiceMock;
 
         [SetUp]
-        public void SetUp2()
+        public void SetUpTest()
         {
             _accountServiceMock = Fixture.Freeze<Mock<IAccountService>>();
+        }
+
+        //For the CeateAccountAsync endpoint I created a test for each returned status code (Ok, BadRequest, InternalServerError)
+        //Tests in the same style should be added for the other endpoints but for example purposes this should be enough
+
+        [Test]
+        public async Task CanCreateAccount()
+        {
+            //Arrange
+            var userId = Fixture.Create<string>();
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.OpenCustomerAccountAsync(userId)).ReturnsAsync(accountId);
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.CreateAccountAsync(userId).ConfigureAwait(false) as OkNegotiatedContentResult<int>;
+
+            //Assert
+            Assert.That(actual.Content, Is.EqualTo(accountId));
+        }
+
+        [Test]
+        public async Task CreateAccountReturnsBadRequestWhenUserIDNotUnique()
+        {
+            //Arrange
+            var userId = Fixture.Create<string>();
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.OpenCustomerAccountAsync(userId))
+                .ThrowsAsync(Fixture.Create<UserIdNotUniqueException>());
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.CreateAccountAsync(userId).ConfigureAwait(false) as BadRequestErrorMessageResult;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task CreateAccountReturnsInternalServerErrorWhenExceptionIsThrown()
+        {
+            //Arrange
+            var userId = Fixture.Create<string>();
+            var accountId = Fixture.Create<int>();
+            _accountServiceMock.Setup(x => x.OpenCustomerAccountAsync(userId))
+                .ThrowsAsync(Fixture.Create<Exception>());
+
+            var sut = new AccountController(_accountServiceMock.Object);
+
+            //Act
+            var actual = await sut.CreateAccountAsync(userId).ConfigureAwait(false) as NegotiatedContentResult<string>;
+
+            //Assert
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
         }
 
         [Test]

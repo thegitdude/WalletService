@@ -73,6 +73,9 @@ namespace WalletService.Service
 
         public async Task<decimal> WithdrawAmountAsync(int accountId, decimal amount)
         {
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException("Requested withdraw is less than the accepted minimum!");
+
             var account = await GetAccountInformationAsync(accountId).ConfigureAwait(false);
 
             var tempBalance = account.Balance - amount;
@@ -87,6 +90,9 @@ namespace WalletService.Service
 
         public async Task<decimal> DepositAmountAsync(int accountId, decimal amount)
         {
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException("The deposited amount should be a positive number");
+
             const string sql = @"UPDATE Accounts SET Balance = Balance + @Amount, ModifiedDate = GETDATE() 
                                 OUTPUT INSERTED.Balance
                                 WHERE id= @Id ";

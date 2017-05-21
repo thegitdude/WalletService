@@ -5,9 +5,9 @@ using System.Reflection;
 
 namespace WalletService.Migration
 {
-    class Program
+    public class Program
     {
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var connectionString = args.FirstOrDefault()
            ?? System.Configuration.ConfigurationManager.ConnectionStrings["sql.connectionString"].ConnectionString;
